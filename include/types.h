@@ -12,8 +12,10 @@ using i32 = std::int32_t;
 using i64 = std::int64_t;
 
 // Unsigned integer
+using u8 = std::uint8_t;
 using u32 = std::uint32_t;
 using u64 = std::uint64_t;
 
 using point3 = glm::vec3;
 using color = glm::vec3;
+using u8color = glm::u8vec3;

@@ -14,6 +14,7 @@
 /*****************************************************************************/
 // Local includes
 #include "color.h"
+#include "glm/ext/vector_int3_sized.hpp"
 #include "utils.h"
 #include "ray.h"
 #include "material.h"
@@ -21,6 +22,7 @@
 #include "sphere.h"
 #include "camera.h"
 #include "vec3_utils.h"
+#include "image.h"
 
 /*****************************************************************************/
 // Forward decls
@@ -28,7 +30,7 @@ color ray_color(const ray& r, const hittable& world, u32 depth);
 
 hittable_list random_scene();
 
-std::string process_rows(u32 tid, i32 start, i32 end, i32 img_height, i32 img_width, i32 samples, 
+std::vector<u8color> process_rows(u32 tid, i32 start, i32 end, i32 img_height, i32 img_width, i32 samples, 
                          const camera& cam, const hittable_list& world, const i32 max_depth);
 
 std::ostream& operator<<(std::ostream& out, const glm::vec3& v) {
@@ -59,9 +61,9 @@ int main(int argc, char** argv) {
 
     // render settings
     const f32 aspect_ratio = 16.0f / 9.0f;
-    const i32 img_width = 400;
+    const i32 img_width = 1280;
     const i32 img_height = static_cast<i32>(img_width / aspect_ratio);
-    const u32 samples = 100;
+    const u32 samples = 500;
     const u32 max_depth = 50;
 
     // camera settings
@@ -79,14 +81,12 @@ int main(int argc, char** argv) {
 
     camera cam{lookfrom, lookat, up, vertical_fov, aspect_ratio, aperture, dist_to_focus};
 
-    std::ofstream file{argv[1]};
-    file << "P3\n" << img_width << ' ' << img_height << "\n255\n";
-
     // hide terminal cursor
     std::printf("\e[?25l");
 
     u32 thread_count = std::stoi(std::string{argv[2]});
     if (thread_count == 1) {
+        std::vector<u8color> pixels;
         for (i32 row = img_height - 1; row >= 0; --row) {
             std::cerr << "\rScanlines remaining: " << row << ' ' << std::flush;
             for (i32 col = 0; col < img_width; ++col) {
@@ -97,12 +97,18 @@ int main(int argc, char** argv) {
                     ray r = cam.get_ray(u, v);
                     pixel += ray_color(r, world, max_depth);
                 }
-                write_color(file, pixel, samples);
+                pixels.push_back(to_u8color(pixel, samples));
             }
-            file << '\n';
+        }
+
+        bool valid_write = write_to_png(argv[1], pixels, img_width, img_height);
+        if (valid_write) {
+            std::cerr << "\nWrite success!\n";
+        } else {
+            std::cerr << "\nWrite fail\n";
         }
     } else {
-        std::vector<std::future<std::string>> futures;
+        std::vector<std::future<std::vector<u8color>>> futures;
         g_counts = std::vector<i32>(thread_count);
         for (u32 tid = 0; tid < thread_count; ++tid) {
             u32 start = partition(tid, thread_count, img_height);
@@ -116,16 +122,23 @@ int main(int argc, char** argv) {
             std::cerr << "\rScanlines finished: " << sum << "/" << img_height << ' ';
         } while (sum < img_height);
 
+        std::vector<u8color> pixels;
         for (auto it = std::rbegin(futures); it != std::rend(futures); ++it) {
-            file << it->get();
+            auto row_data = it->get();
+            pixels.insert(std::end(pixels), std::begin(row_data), std::end(row_data));
+        }
+
+        bool valid_write = write_to_png(argv[1], pixels, img_width, img_height);
+        if (valid_write) {
+            std::cerr << "\nWrite success!\n";
+        } else {
+            std::cerr << "\nWrite fail\n";
         }
     }
 
     // re-show terminal cursor
     std::printf("\e[?25h");
-    
     std::cerr << "\nDone\n";
-    file.close();
 
     return 0;
 }
@@ -200,9 +213,9 @@ hittable_list random_scene() {
 
 /*****************************************************************************/
 
-std::string process_rows(u32 tid, i32 start, i32 end, i32 img_height, i32 img_width, i32 samples, 
+std::vector<u8color> process_rows(u32 tid, i32 start, i32 end, i32 img_height, i32 img_width, i32 samples, 
                          const camera& cam, const hittable_list& world, const i32 max_depth) {
-    std::string pixels;
+    std::vector<u8color> pixels;
     
     for (i32 row = end - 1; row >= start; --row) {
         for (i32 col = 0; col < img_width; ++col) {
@@ -213,9 +226,8 @@ std::string process_rows(u32 tid, i32 start, i32 end, i32 img_height, i32 img_wi
                 ray r = cam.get_ray(u, v);
                 pixel += ray_color(r, world, max_depth);
             }
-            pixels += color_string(pixel, samples);
+            pixels.push_back(to_u8color(pixel, samples));
         }
-        pixels += '\n';
         ++g_counts[tid];
     }
 
