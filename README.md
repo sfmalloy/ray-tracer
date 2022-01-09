@@ -22,7 +22,7 @@ make
 ```
 ## Running
 ```
-./src/RayTracer <image_name>.ppm <thread_count>
+./src/RayTracer <image_name>.png <thread_count>
 ```
 To change settings, currently you have to edit render and camera settings within `main.cpp`, but eventually I will add a way to do this from a seperate config file.
 
