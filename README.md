@@ -3,7 +3,7 @@
 Simple ray tracing engine adapted from [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html).
 
 ## Cloning
-To make sure you're using the same versions of submodules I am, you should clone using the `--recursive` flag
+To make sure you're downloading submodules this engine uses, you should clone using the `--recursive` flag
 ```
 git clone https://github.com/sfmalloy/ray-tracer.git --recursive
 ```
