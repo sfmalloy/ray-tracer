@@ -1,7 +1,7 @@
-#include "color.h"
-#include "material.h"
-#include "vec3_utils.h"
-#include "utils.h"
+#include "color.hpp"
+#include "material.hpp"
+#include "vec3_utils.hpp"
+#include "utils.hpp"
 
 lambertian::lambertian(const color& albedo)
   : m_albedo{albedo}

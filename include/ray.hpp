@@ -2,8 +2,8 @@
 
 #include <glm/vec3.hpp>
 
-#include "ray.h"
-#include "types.h"
+#include "ray.hpp"
+#include "types.hpp"
 
 class ray {
 public:

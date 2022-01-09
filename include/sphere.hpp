@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "types.h"
-#include "material.h"
+#include "types.hpp"
+#include "material.hpp"
 
 class sphere : public hittable {
 public:

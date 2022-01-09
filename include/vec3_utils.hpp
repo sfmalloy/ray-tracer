@@ -1,4 +1,4 @@
-#include "types.h"
+#include "types.hpp"
 
 #include <glm/vec3.hpp>
 

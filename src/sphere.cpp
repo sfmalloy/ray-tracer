@@ -2,9 +2,9 @@
 #include <memory>
 #include <glm/vec3.hpp>
 
-#include "sphere.h"
-#include "vec3_utils.h"
-#include "types.h"
+#include "sphere.hpp"
+#include "vec3_utils.hpp"
+#include "types.hpp"
 
 sphere::sphere()
 { }

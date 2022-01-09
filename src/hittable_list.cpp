@@ -1,10 +1,10 @@
 #include <memory>
 #include <vector>
 
-#include "types.h"
-#include "ray.h"
-#include "hittable_list.h"
-#include "hittable.h"
+#include "types.hpp"
+#include "ray.hpp"
+#include "hittable_list.hpp"
+#include "hittable.hpp"
 
 hittable_list::hittable_list() { }
 

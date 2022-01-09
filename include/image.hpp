@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "color.h"
-#include "types.h"
+#include "color.hpp"
+#include "types.hpp"
 
 constexpr const i32 COMP = 3;
 

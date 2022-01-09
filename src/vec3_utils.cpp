@@ -2,8 +2,8 @@
 #include <glm/vec3.hpp>
 #include <glm/geometric.hpp>
 
-#include "vec3_utils.h"
-#include "utils.h"
+#include "vec3_utils.hpp"
+#include "utils.hpp"
 
 f32 vec3_length_squared(const glm::vec3& v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;

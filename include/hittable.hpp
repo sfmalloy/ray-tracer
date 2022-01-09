@@ -4,9 +4,9 @@
 #include <glm/vec3.hpp>
 #include <glm/geometric.hpp>
 
-#include "types.h"
-#include "ray.h"
-#include "material.h"
+#include "types.hpp"
+#include "ray.hpp"
+#include "material.hpp"
 
 class material;
 

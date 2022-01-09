@@ -5,7 +5,7 @@
 #include <limits>
 #include <memory>
 
-#include "types.h"
+#include "types.hpp"
 
 const f32 INF = std::numeric_limits<f32>::infinity();
 const f32 PI  = 3.1415926535897932385;

@@ -1,9 +1,9 @@
 #include <glm/vec3.hpp>
+#include <glm/geometric.hpp>
 
-#include "camera.h"
-#include "glm/geometric.hpp"
-#include "utils.h"
-#include "vec3_utils.h"
+#include "camera.hpp"
+#include "utils.hpp"
+#include "vec3_utils.hpp"
 
 camera::camera(
         const glm::vec3& lookfrom, 

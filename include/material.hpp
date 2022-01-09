@@ -2,9 +2,9 @@
 
 #include <cmath>
 
-#include "ray.h"
-#include "color.h"
-#include "hittable.h"
+#include "ray.hpp"
+#include "color.hpp"
+#include "hittable.hpp"
 
 struct hit_record;
 

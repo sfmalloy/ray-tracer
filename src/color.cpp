@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <cmath>
 
-#include "types.h"
-#include "color.h"
+#include "types.hpp"
+#include "color.hpp"
 
 void write_color(std::ostream& out, const color& c, u32 samples) {
     f32 scale = 1.0 / samples;

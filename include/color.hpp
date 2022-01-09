@@ -3,7 +3,7 @@
 #include <ostream>
 #include <glm/vec3.hpp>
 
-#include "types.h"
+#include "types.hpp"
 
 void write_color(std::ostream& out, const color& c, u32 samples);
 

@@ -2,8 +2,8 @@
 
 #include <glm/vec3.hpp>
 
-#include "types.h"
-#include "ray.h"
+#include "types.hpp"
+#include "ray.hpp"
 
 class camera {
 public:

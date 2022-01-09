@@ -12,17 +12,20 @@
 #include <numeric>
 
 /*****************************************************************************/
+// Lib includes
+#include <glm/vec3.hpp>
+
+/*****************************************************************************/
 // Local includes
-#include "color.h"
-#include "glm/ext/vector_int3_sized.hpp"
-#include "utils.h"
-#include "ray.h"
-#include "material.h"
-#include "hittable_list.h"
-#include "sphere.h"
-#include "camera.h"
-#include "vec3_utils.h"
-#include "image.h"
+#include "color.hpp"
+#include "utils.hpp"
+#include "ray.hpp"
+#include "material.hpp"
+#include "hittable_list.hpp"
+#include "sphere.hpp"
+#include "camera.hpp"
+#include "vec3_utils.hpp"
+#include "image.hpp"
 
 /*****************************************************************************/
 // Forward decls
@@ -63,7 +66,7 @@ int main(int argc, char** argv) {
     const f32 aspect_ratio = 16.0f / 9.0f;
     const i32 img_width = 1280;
     const i32 img_height = static_cast<i32>(img_width / aspect_ratio);
-    const u32 samples = 500;
+    const u32 samples = 1;
     const u32 max_depth = 50;
 
     // camera settings
@@ -102,11 +105,8 @@ int main(int argc, char** argv) {
         }
 
         bool valid_write = write_to_png(argv[1], pixels, img_width, img_height);
-        if (valid_write) {
-            std::cerr << "\nWrite success!\n";
-        } else {
+        if (!valid_write)
             std::cerr << "\nWrite fail\n";
-        }
     } else {
         std::vector<std::future<std::vector<u8color>>> futures;
         g_counts = std::vector<i32>(thread_count);
@@ -129,16 +129,13 @@ int main(int argc, char** argv) {
         }
 
         bool valid_write = write_to_png(argv[1], pixels, img_width, img_height);
-        if (valid_write) {
-            std::cerr << "\nWrite success!\n";
-        } else {
+        if (!valid_write)
             std::cerr << "\nWrite fail\n";
-        }
     }
 
     // re-show terminal cursor
     std::printf("\e[?25h");
-    std::cerr << "\nDone\n";
+    std::cerr << "Done\n";
 
     return 0;
 }

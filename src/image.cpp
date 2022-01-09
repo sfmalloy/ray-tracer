@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "types.h"
-#include "image.h"
+#include "types.hpp"
+#include "image.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
