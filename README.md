@@ -2,9 +2,18 @@
 
 Simple ray tracing engine adapted from [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html).
 
-## Building
-`cmake` is required for building. Currently this engine does not rely on outside libraries (except pthreads, but more will be added). To build
+## Cloning
+To make sure you're using the same versions of submodules I am, you should clone using the `--recursive` flag
+```
+git clone https://github.com/sfmalloy/ray-tracer.git --recursive
+```
 
+## Building
+Current outside libraries include:
+- glm
+- Whatever threading library your compiler uses to implement std::future
+
+`cmake` is required for building. To build
 ```
 mkdir build
 cd build
