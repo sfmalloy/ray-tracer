@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include "vec3.h"
 #include "types.h"
 #include "material.h"
 

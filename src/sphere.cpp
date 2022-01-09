@@ -1,23 +1,25 @@
 #include <cmath>
 #include <memory>
+#include <glm/vec3.hpp>
 
-#include "vec3.h"
 #include "sphere.h"
+#include "vec3_utils.h"
+#include "types.h"
 
 sphere::sphere()
 { }
 
-sphere::sphere(point3 center, f32 radius, std::shared_ptr<material> mat)
+sphere::sphere(glm::vec3 center, f32 radius, std::shared_ptr<material> mat)
   : m_center{center},
     m_radius{radius},
     m_mat_ptr{mat}
 { }
 
 bool sphere::hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const {
-    vec3 oc = r.origin() - m_center;
-    f32 a = r.direction().length_squared();
+    glm::vec3 oc = r.origin() - m_center;
+    f32 a = vec3_length_squared(r.direction());
     f32 half_b = dot(oc, r.direction());
-    f32 c = oc.length_squared() - m_radius * m_radius;
+    f32 c = vec3_length_squared(oc) - m_radius * m_radius;
 
     f32 discriminant = half_b * half_b - a * c;
     if (discriminant < 0)
@@ -35,7 +37,7 @@ bool sphere::hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const {
 
     rec.t = root;
     rec.p = r.at(rec.t);
-    vec3 outward_normal = (rec.p - m_center) / m_radius;
+    glm::vec3 outward_normal = (rec.p - m_center) / m_radius;
     rec.set_face_normal(r, outward_normal);
     rec.mat_ptr = m_mat_ptr;
 

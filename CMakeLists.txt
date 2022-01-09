@@ -7,4 +7,5 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(CMAKE_BUILD_TYPE Release)
 
 project(RayTracer)
+add_subdirectory(glm)
 add_subdirectory(src)

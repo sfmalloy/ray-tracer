@@ -1,23 +1,24 @@
 #pragma once
 
 #include <memory>
+#include <glm/vec3.hpp>
+#include <glm/geometric.hpp>
 
 #include "types.h"
-#include "vec3.h"
 #include "ray.h"
 #include "material.h"
 
 class material;
 
 struct hit_record {
-    point3 p;
-    vec3 normal;
+    glm::vec3 p;
+    glm::vec3 normal;
     std::shared_ptr<material> mat_ptr;
     f32 t;
     bool front_face;
 
-    inline void set_face_normal(const ray& r, const vec3& outward_normal) {
-        front_face = dot(r.direction(), outward_normal) < 0.0;
+    inline void set_face_normal(const ray& r, const glm::vec3& outward_normal) {
+        front_face = glm::dot(r.direction(), outward_normal) < 0.0f;
         normal = front_face ? outward_normal : -outward_normal;
     }
 };

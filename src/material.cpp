@@ -1,15 +1,16 @@
-#include "vec3.h"
 #include "color.h"
 #include "material.h"
+#include "vec3_utils.h"
+#include "utils.h"
 
 lambertian::lambertian(const color& albedo)
   : m_albedo{albedo}
 { }
 
-bool lambertian::scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered) const {
-    // vec3 dir = rec.normal + randvec();
-    vec3 dir = rec.p + randvec_hemisphere(rec.normal);
-    if (dir.near_zero())
+bool lambertian::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
+    // glm::vec3 dir = rec.normal + randvec();
+    glm::vec3 dir = rec.p + randvec_hemisphere(rec.normal);
+    if (vec3_near_zero(dir))
         dir = rec.normal;
 
     scattered = ray{rec.p, dir - rec.p};
@@ -22,8 +23,8 @@ metal::metal(const color& albedo, f32 fuzz)
     m_fuzz{fuzz < 1 ? fuzz : 1}
 { }
 
-bool metal::scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered) const {
-    vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
+bool metal::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
+    glm::vec3 reflected = reflect(glm::normalize(r_in.direction()), rec.normal);
     scattered = ray{rec.p, reflected + m_fuzz * randvec_unit_sphere()};
     attenuation = m_albedo;
 
@@ -34,16 +35,16 @@ dielectric::dielectric(f32 index_of_refraction)
   : m_ir{index_of_refraction}
 { }
 
-bool dielectric::scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered) const {
+bool dielectric::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
     attenuation = color{1.0, 1.0, 1.0};
     f32 refraction_ratio = rec.front_face ? (1.0 / m_ir) : m_ir;
 
-    vec3 unit_dir = unit_vector(r_in.direction());
+    glm::vec3 unit_dir = glm::normalize(r_in.direction());
     f32 cos_theta = std::fmin(dot(-unit_dir, rec.normal), 1.0);
     f32 sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
 
     bool cannot_refract = refraction_ratio * sin_theta > 1.0;
-    vec3 dir;
+    glm::vec3 dir;
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > randf32())
         dir = reflect(unit_dir, rec.normal);
     else
