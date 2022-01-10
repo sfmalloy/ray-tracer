@@ -25,8 +25,11 @@ make
 ```
 ## Running
 ```
-./src/RayTracer <image_name>.png <thread_count>
+./src/RayTracer <image_name>.png <thread_count> [<scene>.yml]
 ```
-To change settings, currently you have to edit render and camera settings within `main.cpp`, but eventually I will add a way to do this from a seperate config file.
+To change camera settings, you currently have to edit `main.cpp`, but eventually I will add a way to do this from a seperate config file. You can however edit the objects in the scene by making a custom yaml file. See the `scenes` directory for examples on syntax. To render an example scene (e.g. three_spheres.yml) you can run:
+```
+./src/RayTracer three_spheres.png 1 ../scenes/three_spheres.yml
+```
 
 ![Rendered image of a bunch of spheres](img/final.png)
