@@ -20,11 +20,11 @@ bool lambertian::scatter(const ray& r_in, const hit_record& rec, color& attenuat
 
 metal::metal(const color& albedo, f32 fuzz)
   : m_albedo{albedo},
-    m_fuzz{fuzz < 1 ? fuzz : 1}
+    m_fuzz{fuzz < 1.0f ? fuzz : 1.0f}
 { }
 
 bool metal::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
-    glm::vec3 reflected = reflect(glm::normalize(r_in.direction()), rec.normal);
+    glm::vec3 reflected = glm::reflect(glm::normalize(r_in.direction()), rec.normal);
     scattered = ray{rec.p, reflected + m_fuzz * randvec_unit_sphere()};
     attenuation = m_albedo;
 
@@ -36,17 +36,17 @@ dielectric::dielectric(f32 index_of_refraction)
 { }
 
 bool dielectric::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
-    attenuation = color{1.0, 1.0, 1.0};
-    f32 refraction_ratio = rec.front_face ? (1.0 / m_ir) : m_ir;
+    attenuation = color{1.0f, 1.0f, 1.0f};
+    f32 refraction_ratio = rec.front_face ? (1.0f / m_ir) : m_ir;
 
     glm::vec3 unit_dir = glm::normalize(r_in.direction());
-    f32 cos_theta = std::fmin(dot(-unit_dir, rec.normal), 1.0);
-    f32 sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
+    f32 cos_theta = std::fmin(dot(-unit_dir, rec.normal), 1.0f);
+    f32 sin_theta = std::sqrt(1.0f - cos_theta * cos_theta);
 
-    bool cannot_refract = refraction_ratio * sin_theta > 1.0;
+    bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
     glm::vec3 dir;
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > randf32())
-        dir = reflect(unit_dir, rec.normal);
+        dir = glm::reflect(unit_dir, rec.normal);
     else
         dir = refract(unit_dir, rec.normal, refraction_ratio);
 

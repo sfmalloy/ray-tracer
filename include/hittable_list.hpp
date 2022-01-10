@@ -16,6 +16,8 @@ public:
 
     virtual bool hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const override;
 
-private:
+    size_t size() const { return m_objects.size(); }
+
+public:
     std::vector<std::shared_ptr<hittable>> m_objects;
 };

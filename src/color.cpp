@@ -24,7 +24,7 @@ void write_color_gray(std::ostream& out, const color& c, u32 samples) {
     f32 g = std::sqrt(scale * c.g);
     f32 b = std::sqrt(scale * c.b);
 
-    i32 gray = static_cast<i32>(256 * std::clamp((r + g + b) / 3.0, 0.0, 0.999));
+    i32 gray = static_cast<i32>(256 * std::clamp((r + g + b) / 3.0f, 0.0f, 0.999f));
     out << gray << ' ' << gray << ' ' << gray << '\n';
 }
 

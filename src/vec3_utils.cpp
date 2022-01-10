@@ -21,7 +21,7 @@ glm::vec3 refract(const glm::vec3& uv, const glm::vec3& normal, f32 etai_over_et
 }
 
 glm::vec3 randvec() {
-    return glm::vec3{randf32(), randf32(), randf32()};
+    return glm::vec3{randvec_unit_sphere()};
 }
 
 glm::vec3 randvec(f32 min, f32 max) {

@@ -14,6 +14,7 @@
 /*****************************************************************************/
 // Lib includes
 #include <glm/vec3.hpp>
+#include <yaml-cpp/yaml.h>
 
 /*****************************************************************************/
 // Local includes
@@ -26,6 +27,17 @@
 #include "camera.hpp"
 #include "vec3_utils.hpp"
 #include "image.hpp"
+#include "scene_loader.hpp"
+#include "yaml-cpp/node/parse.h"
+
+struct scene_attributes {
+    i32 img_height;
+    i32 img_width;
+    u32 samples;
+    i32 max_depth;
+    camera cam;
+    hittable_list world;
+};
 
 /*****************************************************************************/
 // Forward decls
@@ -33,8 +45,7 @@ color ray_color(const ray& r, const hittable& world, u32 depth);
 
 hittable_list random_scene();
 
-std::vector<u8color> process_rows(u32 tid, i32 start, i32 end, i32 img_height, i32 img_width, i32 samples, 
-                         const camera& cam, const hittable_list& world, const i32 max_depth);
+std::vector<u8color> process_rows(u32 tid, i32 start, i32 end, const scene_attributes& scene);
 
 std::ostream& operator<<(std::ostream& out, const glm::vec3& v) {
     out << "[ " << v.x << ' ' << v.y << ' ' << v.z << " ]";
@@ -55,29 +66,35 @@ std::vector<i32> g_counts;
 
 int main(int argc, char** argv) {
     if (argc < 3) {
-        std::cerr << "Please enter filename\nUsage: ./RayTracer <filename>.ppm <thread_count>\n";
+        std::cerr << "Please enter filename\nUsage: ./RayTracer <filename>.ppm <thread_count>\n [<scene>.yml]";
         return -1;
     }
+    std::srand(std::time(0));
 
+    hittable_list world;
+    if (argc >= 4) {
+        auto node = YAML::LoadFile(argv[3]);
+        world = node["scene"].as<hittable_list>();
+    } else {
+        world = random_scene();
+    }
     /*********************************************************************/
     // Change this stuff to change the render
 
     // render settings
     const f32 aspect_ratio = 16.0f / 9.0f;
-    const i32 img_width = 1280;
+    const i32 img_width = 400;
     const i32 img_height = static_cast<i32>(img_width / aspect_ratio);
-    const u32 samples = 1;
+    const u32 samples = 100;
     const u32 max_depth = 50;
 
     // camera settings
-    glm::vec3 lookfrom{13.0f, 2.0f, 3.0f};
-    glm::vec3 lookat{0.0f, 0.0f, 0.0f};
+    glm::vec3 lookfrom{0.0f, 0.0f, 0.0f};
+    glm::vec3 lookat{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, 1.0f, 0.0f};
-    f32 vertical_fov = 20.0f;
-    f32 dist_to_focus = 10.0f;
-    f32 aperture = 0.1f;
-
-    hittable_list world = random_scene();
+    f32 vertical_fov = 90.0f;
+    f32 dist_to_focus = 1.0f;
+    f32 aperture = 0;
 
     // end of changeable area
     /*********************************************************************/
@@ -85,7 +102,7 @@ int main(int argc, char** argv) {
     camera cam{lookfrom, lookat, up, vertical_fov, aspect_ratio, aperture, dist_to_focus};
 
     // hide terminal cursor
-    std::printf("\e[?25l");
+    // std::printf("\e[?25l");
 
     u32 thread_count = std::stoi(std::string{argv[2]});
     if (thread_count == 1) {
@@ -106,14 +123,22 @@ int main(int argc, char** argv) {
 
         bool valid_write = write_to_png(argv[1], pixels, img_width, img_height);
         if (!valid_write)
-            std::cerr << "\nWrite fail\n";
+            std::cerr << "\nWrite fail";
     } else {
+        scene_attributes scene{
+            img_height,
+            img_width,
+            samples,
+            max_depth,
+            cam,
+            world
+        };
         std::vector<std::future<std::vector<u8color>>> futures;
         g_counts = std::vector<i32>(thread_count);
         for (u32 tid = 0; tid < thread_count; ++tid) {
             u32 start = partition(tid, thread_count, img_height);
             u32 end = partition(tid + 1, thread_count, img_height);
-            futures.push_back(std::async(process_rows, tid, start, end, img_height, img_width, samples, std::cref(cam), std::cref(world), max_depth));
+            futures.push_back(std::async(process_rows, tid, start, end, std::cref(scene)));
         }
 
         i32 sum;
@@ -134,8 +159,8 @@ int main(int argc, char** argv) {
     }
 
     // re-show terminal cursor
-    std::printf("\e[?25h");
-    std::cerr << "Done\n";
+    // std::printf("\e[?25h");
+    std::cerr << "\nDone\n";
 
     return 0;
 }
@@ -172,7 +197,7 @@ hittable_list random_scene() {
     glm::vec3 pt{4.0f, 0.2f, 0.0f};
     for (i32 i = -11; i < 11; ++i) {
         for (i32 j = -11; j < 11; ++j) {
-            auto rand_mat = randf32();
+            f32 rand_mat = randf32();
             glm::vec3 center{i + 0.9f * randf32(), 0.2f, j + 0.9f * randf32()};
 
             if ((center - pt).length() > 0.9f) {
@@ -210,20 +235,19 @@ hittable_list random_scene() {
 
 /*****************************************************************************/
 
-std::vector<u8color> process_rows(u32 tid, i32 start, i32 end, i32 img_height, i32 img_width, i32 samples, 
-                         const camera& cam, const hittable_list& world, const i32 max_depth) {
+std::vector<u8color> process_rows(u32 tid, i32 start, i32 end, const scene_attributes& scene) {
     std::vector<u8color> pixels;
     
     for (i32 row = end - 1; row >= start; --row) {
-        for (i32 col = 0; col < img_width; ++col) {
+        for (i32 col = 0; col < scene.img_width; ++col) {
             color pixel{};
-            for (u32 s = 0; s < samples; ++s) {
-                f32 u = (col + randf32()) / (img_width - 1);
-                f32 v = (row + randf32()) / (img_height - 1);
-                ray r = cam.get_ray(u, v);
-                pixel += ray_color(r, world, max_depth);
+            for (u32 s = 0; s < scene.samples; ++s) {
+                f32 u = (col + randf32()) / (scene.img_width - 1);
+                f32 v = (row + randf32()) / (scene.img_height - 1);
+                ray r = scene.cam.get_ray(u, v);
+                pixel += ray_color(r, scene.world, scene.max_depth);
             }
-            pixels.push_back(to_u8color(pixel, samples));
+            pixels.push_back(to_u8color(pixel, scene.samples));
         }
         ++g_counts[tid];
     }

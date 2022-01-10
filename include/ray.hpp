@@ -2,7 +2,6 @@
 
 #include <glm/vec3.hpp>
 
-#include "ray.hpp"
 #include "types.hpp"
 
 class ray {

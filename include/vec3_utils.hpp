@@ -1,6 +1,8 @@
-#include "types.hpp"
+#pragma once
 
 #include <glm/vec3.hpp>
+
+#include "types.hpp"
 
 f32 vec3_length_squared(const glm::vec3& v);
 

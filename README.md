@@ -9,8 +9,11 @@ git clone https://github.com/sfmalloy/ray-tracer.git --recursive
 ```
 
 ## Building
-Current outside libraries include:
+Dependencies:
+- C++17
 - glm
+- stb (only stb_image_write.h)
+- yaml-cpp
 - Whatever threading library your compiler uses to implement std::future
 
 `cmake` is required for building. To build

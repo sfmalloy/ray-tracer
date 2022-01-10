@@ -21,7 +21,7 @@ camera::camera(
 
     w = glm::normalize(lookfrom - lookat);
     u = glm::normalize(glm::cross(up, w));
-    v = cross(w, u);
+    v = glm::cross(w, u);
 
     m_origin = lookfrom;
     m_horizontal = focus_dist * viewport_width * u;

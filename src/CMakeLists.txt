@@ -1,3 +1,10 @@
+# if (CMAKE_BUILD_TYPE EQUAL "Debug")
+#     message("Debug mode")
+#     set(CMAKE_CXX_FLAGS_DEBUG  "-g")
+# else()
+#     set(CMAKE_BUILD_TYPE Release)
+# endif()
+
 include_directories(${RayTracer_SOURCE_DIR}/include)
 include_directories(${RayTracer_SOURCE_DIR}/lib/stb)
 
@@ -9,4 +16,5 @@ find_package(Threads REQUIRED)
 
 target_link_libraries(RayTracer PRIVATE 
     Threads::Threads 
-    glm::glm)
+    glm::glm
+    yaml-cpp::yaml-cpp)
