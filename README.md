@@ -31,5 +31,5 @@ To change camera settings, you currently have to edit `main.cpp`, but eventually
 ```
 ./src/RayTracer three_spheres.png 1 ../scenes/three_spheres.yml
 ```
-
+## Sample Rendered Image
 ![Rendered image of a bunch of spheres](img/final.png)
