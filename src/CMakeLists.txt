@@ -1,4 +1,3 @@
-include_directories(${RayTracer_SOURCE_DIR}/include)
 include_directories(${RayTracer_SOURCE_DIR}/lib/stb)
 
 file(GLOB RayTracer_SOURCE CONFIGURE_DEPENDS "*.cpp")
