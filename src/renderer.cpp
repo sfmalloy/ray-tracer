@@ -53,7 +53,7 @@ std::vector<u8color> row_renderer::render(const scene_attributes& scene) {
         i32 sum;
         do {
             sum = std::accumulate(std::begin(m_counts), std::end(m_counts), 0);
-            std::cerr << "\rPixels rendered: " << sum << std::flush;
+            std::cerr << "\rLines rendered: " << sum << "/" << scene.img_height;
         } while (sum < pixels_needed);
 
         for (auto it = std::rbegin(futures); it != std::rend(futures); ++it) {
@@ -76,8 +76,8 @@ std::vector<u8color> row_renderer::render_thread(u32 tid, i32 start, i32 end, co
                 pixel += ray_color(r, scene.world, scene.max_depth);
             }
             pixels.push_back(to_u8color(pixel, scene.samples));
-            ++m_counts[tid];
         }
+        ++m_counts[tid];
     }
     return pixels;
 }
@@ -112,7 +112,7 @@ std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
             pc += (r + h - r) * (c + w - c);
         }
     }
-
+    u32 total_tiles = m_tiles.size();
     m_counts = std::vector<u32>(m_num_threads, 0);
     m_grid = std::vector<std::vector<u8color>>(scene.img_height, std::vector<u8color>(scene.img_width));
 
@@ -123,11 +123,11 @@ std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
         threads.emplace_back(&tile_renderer::render_thread, this, tid, scene);
     }
 
-    u32 pixel_count;
+    u32 tile_count;
     do {
-        pixel_count = std::accumulate(std::begin(m_counts), std::end(m_counts), 0);
-        std::cerr << "\rPixels rendered: " << pixel_count << std::flush;
-    } while (pixel_count < pixels_needed);
+        tile_count = std::accumulate(std::begin(m_counts), std::end(m_counts), 0);
+        std::cerr << "\rTiles rendered: " << tile_count << "/" << total_tiles;
+    } while (tile_count < total_tiles);
 
     for (auto& t : threads) {
         t.join();
@@ -152,7 +152,7 @@ void tile_renderer::render_thread(u32 tid, const scene_attributes& scene) {
         i32 c_start = top[2];
         i32 c_end = top[3];
 
-        for (i32 row = r_end - 1; row >= r_start; --row) {
+        for (i32 row = r_start; row < r_end; ++row) {
             for (i32 col = c_start; col < c_end; ++col) {
                 color pixel{};
                 for (u32 s = 0; s < scene.samples; ++s) {
@@ -162,8 +162,8 @@ void tile_renderer::render_thread(u32 tid, const scene_attributes& scene) {
                     pixel += ray_color(r, scene.world, scene.max_depth);
                 }
                 m_grid[row][col] = to_u8color(pixel, scene.samples);
-                ++m_counts[tid];
             }
         }
+        ++m_counts[tid];
     }
 }

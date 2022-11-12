@@ -73,10 +73,10 @@ int main(int argc, char** argv) {
     // render settings
     const i32 aspect_width = 16;
     const i32 aspect_height = 9;
-    const f32 aspect_ratio = (f32) aspect_width / aspect_height;
+    const f32 aspect_ratio = static_cast<f32>(aspect_width) / aspect_height;
     const i32 img_width = 1920;
     const i32 img_height = static_cast<i32>(img_width / aspect_ratio);
-    const u32 samples = 500;
+    const u32 samples = 5;
     const u32 max_depth = 50;
     
     // camera settings
@@ -99,8 +99,8 @@ int main(int argc, char** argv) {
 
     t.start();
     u32 thread_count = std::stoi(std::string{argv[2]});
-    // tile_renderer renderer(thread_count);
-    row_renderer renderer(thread_count);
+    tile_renderer renderer(thread_count);
+    // row_renderer renderer(thread_count);
     auto pixel_data = renderer.render(scene);
     if (pixel_data.size() > 0) {
         if (!write_to_png(argv[1], pixel_data, scene.img_width, scene.img_height))
