@@ -71,10 +71,12 @@ int main(int argc, char** argv) {
     // Change this stuff to change the render
 
     // render settings
-    const f32 aspect_ratio = 3.0f / 2.0f;
-    const i32 img_width = 1280;
+    const i32 aspect_width = 16;
+    const i32 aspect_height = 9;
+    const f32 aspect_ratio = (f32) aspect_width / aspect_height;
+    const i32 img_width = 1920;
     const i32 img_height = static_cast<i32>(img_width / aspect_ratio);
-    const u32 samples = 10;
+    const u32 samples = 500;
     const u32 max_depth = 50;
     
     // camera settings
@@ -90,17 +92,20 @@ int main(int argc, char** argv) {
 
     camera cam{lookfrom, lookat, up, vertical_fov, aspect_ratio, aperture, dist_to_focus};
     timer t;
-    scene_attributes scene{img_height, img_width, samples, max_depth, cam, world};
+    scene_attributes scene{aspect_width, aspect_height, img_height, img_width, samples, max_depth, cam, world};
 
     // hide terminal cursor
     std::printf("\e[?25l");
 
     t.start();
     u32 thread_count = std::stoi(std::string{argv[2]});
-    row_renderer row_render(thread_count);
-    auto pixel_data = row_render.render(scene);
-    if (!write_to_png(argv[1], pixel_data, scene.img_width, scene.img_height))
-        std::cerr << "\nWrite fail";
+    // tile_renderer renderer(thread_count);
+    row_renderer renderer(thread_count);
+    auto pixel_data = renderer.render(scene);
+    if (pixel_data.size() > 0) {
+        if (!write_to_png(argv[1], pixel_data, scene.img_width, scene.img_height))
+            std::cerr << "\nWrite fail";
+    }
     t.stop();
 
     // re-show terminal cursor

@@ -5,6 +5,8 @@
 #include "hittable_list.hpp"
 
 struct scene_attributes {
+    i32 aspect_width;
+    i32 aspect_height;
     i32 img_height;
     i32 img_width;
     u32 samples;

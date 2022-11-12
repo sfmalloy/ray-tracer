@@ -1,0 +1,2 @@
+1080p, 500 samples, Tiles:
+Time: 4138.726s

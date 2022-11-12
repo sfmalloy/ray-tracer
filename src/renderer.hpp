@@ -1,12 +1,13 @@
 #pragma once
 
-#include <future>
-#include <thread>
-
 #include "hittable.hpp"
 #include "scene_attributes.hpp"
 #include "timer.hpp"
 #include "types.hpp"
+#include <mutex>
+#include <stack>
+#include <glm/vec4.hpp>
+#include <vector>
 
 class renderer {
 public:
@@ -25,7 +26,7 @@ public:
 private:
     std::vector<u8color> render_thread(u32 tid, i32 start, i32 end, const scene_attributes& scene);
     u32 m_num_threads;
-    std::vector<u32> m_line_counts;
+    std::vector<u32> m_counts;
 };
 
 class tile_renderer : public renderer {
@@ -37,5 +38,11 @@ public:
 
     std::vector<u8color> render(const scene_attributes& scene);
 private:
+    void render_thread(u32 tid, const scene_attributes& scene);
+
     u32 m_num_threads;
+    std::vector<std::vector<u8color>> m_grid;
+    std::mutex m_lock;
+    std::stack<glm::ivec4> m_tiles;
+    std::vector<u32> m_counts;
 };
