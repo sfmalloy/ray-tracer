@@ -5,14 +5,18 @@
 #include "utils.hpp"
 #include "vec3_utils.hpp"
 
+camera::camera()
+  : camera(glm::vec3{}, glm::vec3{}, glm::vec3{}, 90, 1, 0.1, 10)
+{ }
+
 camera::camera(
-        const glm::vec3& lookfrom, 
-        const glm::vec3& lookat, 
-        const glm::vec3& up, 
-        f32 vertical_fov, 
-        f32 aspect_ratio,
-        f32 aperture,
-        f32 focus_dist
+    const glm::vec3& lookfrom, 
+    const glm::vec3& lookat, 
+    const glm::vec3& up, 
+    f32 vertical_fov, 
+    f32 aspect_ratio,
+    f32 aperture,
+    f32 focus_dist
 ) {
     f32 theta = degrees_to_radians(vertical_fov);
     f32 h = std::tan(theta / 2.0f);

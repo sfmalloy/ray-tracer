@@ -7,6 +7,7 @@
 
 class camera {
 public:
+    camera();
     camera(
         const glm::vec3& lookfrom, 
         const glm::vec3& lookat, 

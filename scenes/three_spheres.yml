@@ -4,28 +4,39 @@ scene:
     center: [ 0.0, -100.5, 0.0 ]
     radius: 100
     material:
-        type: lambertian
-        color: [ 0.8, 0.8, 0.0 ]
+      type: lambertian
+      color: [ 0.8, 0.8, 0.0 ]
   -
     type: sphere
     center: [ 0.0, 0.0, -1.0 ]
     radius: 0.5
     material:
-        type: lambertian
-        color: [ 0.7, 0.3, 0.3 ]
+      type: lambertian
+      color: [ 0.7, 0.3, 0.3 ]
   -
     type: sphere
     center: [ -1.0, 0.0, -1.0 ]
     radius: 0.5
     material:
-        type: metal
-        color: [ 0.8, 0.8, 0.8 ]
-        fuzz: 0.3
+      type: metal
+      color: [ 0.8, 0.8, 0.8 ]
+      fuzz: 0.3
   -
     type: sphere
     center: [ 1.0, 0.0, -1.0 ]
     radius: 0.5
     material:
-        type: metal
-        color: [ 0.8, 0.6, 0.2 ]
-        fuzz: 1.0
+      type: metal
+      color: [ 0.8, 0.6, 0.2 ]
+      fuzz: 1.0
+settings:
+  aspect_ratio: [ 16, 9 ]
+  image_width: 1280
+  samples: 15
+  depth: 50
+  lookfrom: [ 0.0, 2.0, 4.0 ]
+  lookat: [ 0.0, 0.0, 0.0 ]
+  up: [ 0.0, 1.0, 0.0 ]
+  fov: 20.0
+  focus_distance: 10.0
+  aperture: 0.1
