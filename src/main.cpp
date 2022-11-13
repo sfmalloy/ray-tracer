@@ -34,23 +34,6 @@
 #include "scene_attributes.hpp"
 
 /*****************************************************************************/
-// Forward decls
-color ray_color(const ray& r, const hittable& world, u32 depth);
-
-hittable_list random_scene();
-
-std::vector<u8color> process_rows(u32 tid, i32 start, i32 end, const scene_attributes& scene);
-
-std::ostream& operator<<(std::ostream& out, const glm::vec3& v) {
-    out << "[ " << v.x << ' ' << v.y << ' ' << v.z << " ]";
-    return out;
-}
-
-/*****************************************************************************/
-// Globals
-std::vector<i32> g_counts;
-
-/*****************************************************************************/
 
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -64,6 +47,8 @@ int main(int argc, char** argv) {
     YAML::Node node;
     if (argc >= 4) {
         node = YAML::LoadFile(argv[3]);
+    } else {
+        node = YAML::Load("");
     }
     scene_attributes scene = node.as<scene_attributes>();
 

@@ -180,18 +180,19 @@ namespace YAML {
                     focus_distance
                 };
             } else {
+                std::cout << "LOADING DEFAULT SCENE\n";
                 rhs = scene_attributes{
                     .aspect_width = 1, 
                     .aspect_height = 1, 
                     .img_height = 500, 
                     .img_width = 500, 
-                    .samples = 10, 
+                    .samples = 50, 
                     .max_depth = 10,
                     .cam = camera{
-                        { 0.0f, 2.0f, 0.0f },
+                        { 13.0f, 2.0f, 3.0f },
                         { 0.0f, 0.0f, 0.0f },
                         { 0.0f, 1.0f, 0.0f },
-                        20.0f, 1, 0.1f, 10.0f
+                        20.0f, 1.0f, 0.1f, 10.0f
                     },
                     .world = random_scene()
                 };
