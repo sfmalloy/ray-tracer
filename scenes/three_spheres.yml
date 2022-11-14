@@ -18,9 +18,8 @@ scene:
     center: [ -1.0, 0.0, -1.0 ]
     radius: 0.5
     material:
-      type: metal
-      color: [ 0.8, 0.8, 0.8 ]
-      fuzz: 0.3
+      type: dielectric
+      index: 1
   -
     type: sphere
     center: [ 1.0, 0.0, -1.0 ]
@@ -28,11 +27,11 @@ scene:
     material:
       type: metal
       color: [ 0.8, 0.6, 0.2 ]
-      fuzz: 1.0
+      fuzz: 0.8
 settings:
   aspect_ratio: [ 1, 1 ]
   image_width: 720
-  samples: 500
+  samples: 50
   depth: 50
   lookfrom: [ 0.0, 2.0, 4.0 ]
   lookat: [ 0.0, 0.5, 0.0 ]

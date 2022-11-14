@@ -23,7 +23,8 @@
 /*****************************************************************************/
 
 void signal_handler(i32 signal) {
-    fmt::print("\r\e[?25h\n");
+    fmt::print("\rSignal recieved, program exiting\n");
+    fmt::print("\e[?25h");
     exit(-1);
 }
 

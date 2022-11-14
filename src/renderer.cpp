@@ -96,26 +96,14 @@ tile_renderer::tile_renderer(u32 num_threads)
 
 std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
     fmt::print("\e[?25l");
-    // TODO: use partition here instead
-    u32 w = scene.img_width;
-    u32 f = m_num_threads;
-    while (w % f != 0) {
-        ++f;
-    }
-    w /= f;
-
-    u32 h = scene.img_height;
-    f = m_num_threads;
-    while (h % f != 0) {
-        ++f;
-    }
-    h /= f;
-    u32 pixels_needed = scene.img_height * scene.img_width;
-    u32 pc = 0;
-    for (i32 r = scene.img_height - h; r >= 0; r -= h) {
-        for (i32 c = 0; c < scene.img_width; c += w) {
-            m_tiles.emplace(r, r + h, c, c + w);
-            pc += (r + h - r) * (c + w - c);
+    u32 tile_limit = m_num_threads;
+    for (i32 r = 0; r < tile_limit; ++r) {
+        u32 r_start = partition(r, tile_limit, scene.img_height);
+        u32 r_end = partition(r + 1, tile_limit, scene.img_height);
+        for (i32 c = 0; c < tile_limit; ++c) {
+            u32 c_start = partition(c, tile_limit, scene.img_width);
+            u32 c_end = partition(c + 1, tile_limit, scene.img_width);
+            m_tiles.emplace(r_start, r_end, c_start, c_end);
         }
     }
     u32 total_tiles = m_tiles.size();
