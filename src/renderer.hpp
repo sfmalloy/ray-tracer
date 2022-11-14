@@ -13,6 +13,7 @@ class renderer {
 public:
     virtual std::vector<u8color> render(const scene_attributes& attrs) = 0;
     color ray_color(const ray& r, const hittable& world, u32 depth);
+    virtual ~renderer() = default;
 };
 
 class row_renderer : public renderer {

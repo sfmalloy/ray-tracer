@@ -9,4 +9,6 @@ find_package(Threads REQUIRED)
 target_link_libraries(RayTracer PRIVATE 
     Threads::Threads 
     glm::glm
-    yaml-cpp::yaml-cpp)
+    yaml-cpp::yaml-cpp
+    fmt::fmt
+    cxxopts::cxxopts)

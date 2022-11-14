@@ -5,14 +5,14 @@ scene:
     radius: 100
     material:
       type: lambertian
-      color: [ 0.8, 0.8, 0.0 ]
+      color: [ 0.5, 0.16015625, 0.1875 ]
   -
     type: sphere
     center: [ 0.0, 0.0, -1.0 ]
     radius: 0.5
     material:
       type: lambertian
-      color: [ 0.7, 0.3, 0.3 ]
+      color: [ 0.3, 0.3, 0.7 ]
   -
     type: sphere
     center: [ -1.0, 0.0, -1.0 ]
@@ -30,13 +30,13 @@ scene:
       color: [ 0.8, 0.6, 0.2 ]
       fuzz: 1.0
 settings:
-  aspect_ratio: [ 16, 9 ]
-  image_width: 1280
-  samples: 15
+  aspect_ratio: [ 1, 1 ]
+  image_width: 720
+  samples: 500
   depth: 50
   lookfrom: [ 0.0, 2.0, 4.0 ]
-  lookat: [ 0.0, 0.0, 0.0 ]
+  lookat: [ 0.0, 0.5, 0.0 ]
   up: [ 0.0, 1.0, 0.0 ]
-  fov: 20.0
-  focus_distance: 10.0
-  aperture: 0.1
+  fov: 45.0
+  focus_distance: 5.0
+  aperture: 0.01

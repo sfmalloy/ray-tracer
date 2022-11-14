@@ -6,6 +6,8 @@
 #include <numeric>
 #include <future>
 
+#include <fmt/core.h>
+
 #include "color.hpp"
 #include "scene_attributes.hpp"
 #include "renderer.hpp"
@@ -37,10 +39,11 @@ row_renderer::row_renderer(u32 num_threads)
 { }
 
 std::vector<u8color> row_renderer::render(const scene_attributes& scene) {
+    fmt::print("\e[?25l");
     std::vector<u8color> pixels;
-    if (m_num_threads == 1) {
-        render_thread(0, 0, scene.img_height, scene);
-    } else {
+    // if (m_num_threads == 1) {
+        // render_thread(0, 0, scene.img_height, scene);
+    // } else {
         std::vector<std::future<std::vector<u8color>>> futures;
         futures.reserve(m_num_threads);
         m_counts = std::vector<u32>(m_num_threads, 0);
@@ -49,18 +52,19 @@ std::vector<u8color> row_renderer::render(const scene_attributes& scene) {
             u32 end = partition(tid + 1, m_num_threads, scene.img_height);
             futures.push_back(std::async(&row_renderer::render_thread, this, tid, start, end, std::cref(scene)));
         }
-        // i32 pixels_needed = scene.img_height * scene.img_width;
         i32 sum;
         do {
             sum = std::accumulate(std::begin(m_counts), std::end(m_counts), 0);
-            std::cerr << "\rLines rendered: " << sum << "/" << scene.img_height;
+            fmt::print("\rLines rendered: {}/{}", sum, scene.img_height);
         } while (sum < scene.img_height);
 
         for (auto it = std::rbegin(futures); it != std::rend(futures); ++it) {
             auto row_data = it->get();
             pixels.insert(std::end(pixels), std::begin(row_data), std::end(row_data));
         }
-    }
+    // }
+    fmt::print("\e[?25h");
+
     return pixels;
 }
 
@@ -91,6 +95,7 @@ tile_renderer::tile_renderer(u32 num_threads)
 { }
 
 std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
+    fmt::print("\e[?25l");
     // TODO: use partition here instead
     u32 w = scene.img_width;
     u32 f = m_num_threads;
@@ -127,7 +132,7 @@ std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
     u32 tile_count;
     do {
         tile_count = std::accumulate(std::begin(m_counts), std::end(m_counts), 0);
-        std::cerr << "\rTiles rendered: " << tile_count << "/" << total_tiles;
+        fmt::print("\rTiles rendered: {}/{}", tile_count, total_tiles);
     } while (tile_count < total_tiles);
 
     for (auto& t : threads) {
@@ -138,6 +143,7 @@ std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
     for (auto it = std::rbegin(m_grid); it != std::rend(m_grid); ++it) {
         pixels.insert(std::end(pixels), std::begin(*it), std::end(*it));
     }
+    fmt::print("\e[?25h");
     return pixels;
 }
 
