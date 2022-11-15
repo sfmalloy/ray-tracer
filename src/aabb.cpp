@@ -21,7 +21,7 @@ point3 aabb::max() const {
     return m_max;
 }
 
-bool aabb::hit(const ray &r, f32 t_min, f32 t_max) const {
+inline bool aabb::hit(const ray &r, f32 t_min, f32 t_max) const {
     for (u32 i = 0; i < 3; ++i) {
         f32 inverse_dir = 1.0f / r.direction()[i];
         f32 t0 = (m_min[i] - r.origin()[i]) * inverse_dir;

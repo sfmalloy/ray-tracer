@@ -2,6 +2,7 @@
 #include <memory>
 #include <glm/vec3.hpp>
 
+#include "aabb.hpp"
 #include "sphere.hpp"
 #include "vec3_utils.hpp"
 #include "types.hpp"
@@ -41,5 +42,14 @@ bool sphere::hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const {
     rec.set_face_normal(r, outward_normal);
     rec.mat_ptr = m_mat_ptr;
 
+    return true;
+}
+
+bool sphere::bounding_box(f32 t0, f32 t1, aabb& output_box) const {
+    auto rvec = glm::vec3{m_radius, m_radius, m_radius};
+    output_box = aabb{
+        m_center - rvec,
+        m_center + rvec
+    };
     return true;
 }

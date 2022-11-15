@@ -4,6 +4,7 @@
 #include <glm/vec3.hpp>
 #include <glm/geometric.hpp>
 
+#include "aabb.hpp"
 #include "types.hpp"
 #include "ray.hpp"
 #include "material.hpp"
@@ -26,4 +27,5 @@ struct hit_record {
 class hittable {
 public:
     virtual bool hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const = 0;
+    virtual bool bounding_box(f32 t0, f32 t1, aabb& output_box) const = 0;
 };
