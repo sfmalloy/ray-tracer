@@ -7,10 +7,12 @@
 
 #include "glm/fwd.hpp"
 #include "scene_attributes.hpp"
+#include "triangle.hpp"
 #include "types.hpp"
 #include "sphere.hpp"
 #include "material.hpp"
 #include "hittable_list.hpp"
+#include "yaml-cpp/node/node.h"
 
 hittable_list random_scene();
 
@@ -32,6 +34,9 @@ namespace YAML {
         static bool decode(const Node& node, std::shared_ptr<hittable>& rhs) {
             if (node["type"].as<std::string>() == "sphere") {
                 rhs = node.as<std::shared_ptr<sphere>>();
+                return true;
+            } else if (node["type"].as<std::string>() == "triangle") {
+                rhs = node.as<std::shared_ptr<triangle>>();
                 return true;
             }
             return false;
@@ -75,6 +80,19 @@ namespace YAML {
             rhs = std::make_shared<sphere>(
                 node["center"].as<glm::vec3>(),
                 node["radius"].as<f32>(),
+                node["material"].as<std::shared_ptr<material>>()
+            );
+            return true;
+        }
+    };
+
+    template<>
+    struct convert<std::shared_ptr<triangle>> {
+        static bool decode(const Node& node, std::shared_ptr<triangle>& rhs) {
+            rhs = std::make_shared<triangle>(
+                node["a"].as<glm::vec3>(),
+                node["b"].as<glm::vec3>(),
+                node["c"].as<glm::vec3>(),
                 node["material"].as<std::shared_ptr<material>>()
             );
             return true;
