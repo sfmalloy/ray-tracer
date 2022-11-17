@@ -11,4 +11,5 @@ target_link_libraries(RayTracer PRIVATE
     glm::glm
     yaml-cpp::yaml-cpp
     fmt::fmt
-    cxxopts::cxxopts)
+    cxxopts::cxxopts
+    assimp::assimp)
