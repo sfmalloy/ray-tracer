@@ -39,3 +39,4 @@
 build/
 release/
 debug/
+obj/

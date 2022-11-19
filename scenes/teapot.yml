@@ -1,0 +1,25 @@
+scene:
+  - 
+    type: model
+    file: ../obj/scene.gltf
+    material:
+      type: lambertian
+      color: [ 80, 80, 80 ]
+  - 
+    type: sphere
+    center: [ 0.0, -1000, 0.0 ]
+    radius: 1000
+    material:
+      type: lambertian
+      color: [ 220, 30, 20 ]
+settings:
+  aspect_ratio: [ 1, 1 ]
+  image_width: 200
+  samples: 10
+  depth: 50
+  lookfrom: [ -8.0, 7.0, 20.0 ]
+  lookat: [ 0.0, 2.0, 0.0 ]
+  up: [ 0.0, 1.0, 0.0 ]
+  fov: 45.0
+  focus_distance: 5.0
+  aperture: 0.01

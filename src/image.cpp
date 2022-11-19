@@ -1,6 +1,3 @@
-#include <vector>
-
-#include "types.hpp"
 #include "image.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION

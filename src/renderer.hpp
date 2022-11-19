@@ -1,13 +1,15 @@
 #pragma once
 
+#include <mutex>
+#include <stack>
+#include <vector>
+
+#include <glm/vec4.hpp>
+
 #include "hittable.hpp"
 #include "scene_attributes.hpp"
 #include "timer.hpp"
 #include "types.hpp"
-#include <mutex>
-#include <stack>
-#include <glm/vec4.hpp>
-#include <vector>
 
 class renderer {
 public:

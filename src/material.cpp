@@ -1,4 +1,3 @@
-#include "color.hpp"
 #include "material.hpp"
 #include "vec3_utils.hpp"
 #include "utils.hpp"

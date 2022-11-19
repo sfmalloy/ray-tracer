@@ -1,16 +1,18 @@
 #pragma once
 
-#include <iostream>
 #include <memory>
+
 #include <glm/glm.hpp>
 #include <yaml-cpp/yaml.h>
+#include <yaml-cpp/node/node.h>
 
-#include "glm/fwd.hpp"
 #include "scene_attributes.hpp"
+#include "triangle.hpp"
 #include "types.hpp"
 #include "sphere.hpp"
 #include "material.hpp"
 #include "hittable_list.hpp"
+#include "mesh.hpp"
 
 hittable_list random_scene();
 
@@ -30,8 +32,15 @@ namespace YAML {
     template<>
     struct convert<std::shared_ptr<hittable>> {
         static bool decode(const Node& node, std::shared_ptr<hittable>& rhs) {
-            if (node["type"].as<std::string>() == "sphere") {
+            std::string type = node["type"].as<std::string>();
+            if (type == "sphere") {
                 rhs = node.as<std::shared_ptr<sphere>>();
+                return true;
+            } else if (type == "triangle") {
+                rhs = node.as<std::shared_ptr<triangle>>();
+                return true;
+            } else if (type == "model") {
+                rhs = node.as<std::shared_ptr<mesh>>();
                 return true;
             }
             return false;
@@ -56,10 +65,10 @@ namespace YAML {
         static bool decode(const Node& node, std::shared_ptr<material>& rhs) {
             std::string type = node["type"].as<std::string>();
             if (type == "lambertian") {
-                rhs = std::make_shared<lambertian>(node["color"].as<color>());
+                rhs = std::make_shared<lambertian>(node["color"].as<color>() / 256.0f);
                 return true;
             } else if (type == "metal") {
-                rhs = std::make_shared<metal>(node["color"].as<color>(), node["fuzz"].as<f32>());
+                rhs = std::make_shared<metal>(node["color"].as<color>() / 256.0f, node["fuzz"].as<f32>());
                 return true;
             } else if (type == "dielectric") {
                 rhs = std::make_shared<dielectric>(node["index"].as<f32>());
@@ -77,6 +86,38 @@ namespace YAML {
                 node["radius"].as<f32>(),
                 node["material"].as<std::shared_ptr<material>>()
             );
+            return true;
+        }
+    };
+
+    template<>
+    struct convert<std::shared_ptr<triangle>> {
+        static bool decode(const Node& node, std::shared_ptr<triangle>& rhs) {
+            rhs = std::make_shared<triangle>(
+                node["a"].as<glm::vec3>(),
+                node["b"].as<glm::vec3>(),
+                node["c"].as<glm::vec3>(),
+                node["material"].as<std::shared_ptr<material>>()
+            );
+            return true;
+        }
+    };
+
+    template<>
+    struct convert<std::shared_ptr<mesh>> {
+        static bool decode(const Node& node, std::shared_ptr<mesh>& rhs) {
+            if (node["offset"].IsDefined()) {
+                rhs = std::make_shared<mesh>(
+                    node["file"].as<std::string>(),
+                    node["material"].as<std::shared_ptr<material>>(),
+                    node["offset"].as<glm::vec3>()
+                );
+            } else {
+                rhs = std::make_shared<mesh>(
+                    node["file"].as<std::string>(),
+                    node["material"].as<std::shared_ptr<material>>()
+                );
+            }
             return true;
         }
     };
@@ -180,7 +221,6 @@ namespace YAML {
                     focus_distance
                 };
             } else {
-                std::cout << "LOADING DEFAULT SCENE\n";
                 rhs = scene_attributes{
                     .aspect_width = 1, 
                     .aspect_height = 1, 

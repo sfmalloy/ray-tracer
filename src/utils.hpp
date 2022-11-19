@@ -26,3 +26,21 @@ inline f32 randf32(f32 min, f32 max) {
 inline u32 partition(u32 tid, u32 p, u32 n) {
     return n * tid / p;
 }
+
+template <typename T>
+T min(T a, T b, T c) {
+    T m{std::numeric_limits<T>::max()};
+    m = a < m ? a : m;
+    m = b < m ? b : m;
+    m = c < m ? c : m;
+    return m;
+}
+
+template <typename T>
+T max(T a, T b, T c) {
+    T m{std::numeric_limits<T>::min()};
+    m = a > m ? a : m;
+    m = b > m ? b : m;
+    m = c > m ? c : m;
+    return m;
+}

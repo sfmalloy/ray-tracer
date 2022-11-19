@@ -1,17 +1,12 @@
-#include <iterator>
 #include <numeric>
 #include <thread>
-#include <iostream>
-#include <vector>
-#include <numeric>
 #include <future>
+#include <numeric>
 
 #include <fmt/core.h>
 
 #include "color.hpp"
-#include "scene_attributes.hpp"
 #include "renderer.hpp"
-#include "types.hpp"
 #include "utils.hpp"
 
 color renderer::ray_color(const ray& r, const hittable& world, u32 depth) {
@@ -27,42 +22,39 @@ color renderer::ray_color(const ray& r, const hittable& world, u32 depth) {
         return color{};
     }
 
-    // gradient sky
+    // background/sky
     glm::vec3 dir = glm::normalize(r.direction());
     f32 t = 0.5f * (dir.y + 1.0f);
-    return (1.0f - t) * color{1.0f, 1.0f, 1.0f} + t * color{0.5f, 0.7f, 1.0f};
+    return (1.0f - t) * color{1.0f, 1.0f, 1.0f} + t * color{0.7f, 0.7f, 0.7f};
 }
 
 row_renderer::row_renderer(u32 num_threads)
-  : m_num_threads(num_threads)
-  , m_counts()
+  : m_num_threads{num_threads}
+  , m_counts{}
 { }
 
 std::vector<u8color> row_renderer::render(const scene_attributes& scene) {
     fmt::print("\e[?25l");
-    std::vector<u8color> pixels;
-    // if (m_num_threads == 1) {
-        // render_thread(0, 0, scene.img_height, scene);
-    // } else {
-        std::vector<std::future<std::vector<u8color>>> futures;
-        futures.reserve(m_num_threads);
-        m_counts = std::vector<u32>(m_num_threads, 0);
-        for (u32 tid = 0; tid < m_num_threads; ++tid) {
-            u32 start = partition(tid, m_num_threads, scene.img_height);
-            u32 end = partition(tid + 1, m_num_threads, scene.img_height);
-            futures.push_back(std::async(&row_renderer::render_thread, this, tid, start, end, std::cref(scene)));
-        }
-        i32 sum;
-        do {
-            sum = std::accumulate(std::begin(m_counts), std::end(m_counts), 0);
-            fmt::print("\rLines rendered: {}/{}", sum, scene.img_height);
-        } while (sum < scene.img_height);
 
-        for (auto it = std::rbegin(futures); it != std::rend(futures); ++it) {
-            auto row_data = it->get();
-            pixels.insert(std::end(pixels), std::begin(row_data), std::end(row_data));
-        }
-    // }
+    std::vector<u8color> pixels;
+    std::vector<std::future<std::vector<u8color>>> futures;
+    futures.reserve(m_num_threads);
+    m_counts = std::vector<u32>(m_num_threads, 0);
+    for (u32 tid = 0; tid < m_num_threads; ++tid) {
+        u32 start = partition(tid, m_num_threads, scene.img_height);
+        u32 end = partition(tid + 1, m_num_threads, scene.img_height);
+        futures.push_back(std::async(&row_renderer::render_thread, this, tid, start, end, std::cref(scene)));
+    }
+    i32 sum;
+    do {
+        sum = std::accumulate(std::begin(m_counts), std::end(m_counts), 0);
+        fmt::print("\rLines rendered: {}/{}", sum, scene.img_height);
+    } while (sum < scene.img_height);
+
+    for (auto it = std::rbegin(futures); it != std::rend(futures); ++it) {
+        auto row_data = it->get();
+        pixels.insert(std::end(pixels), std::begin(row_data), std::end(row_data));
+    }
     fmt::print("\e[?25h");
 
     return pixels;
@@ -87,11 +79,11 @@ std::vector<u8color> row_renderer::render_thread(u32 tid, i32 start, i32 end, co
 }
 
 tile_renderer::tile_renderer(u32 num_threads)
-  : m_num_threads(num_threads)
-  , m_grid()
-  , m_lock()
-  , m_tiles()
-  , m_counts()
+  : m_num_threads{num_threads}
+  , m_grid{}
+  , m_lock{}
+  , m_tiles{}
+  , m_counts{}
 { }
 
 std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
@@ -106,6 +98,7 @@ std::vector<u8color> tile_renderer::render(const scene_attributes& scene) {
             m_tiles.emplace(r_start, r_end, c_start, c_end);
         }
     }
+
     u32 total_tiles = m_tiles.size();
     m_counts = std::vector<u32>(m_num_threads, 0);
     m_grid = std::vector<std::vector<u8color>>(scene.img_height, std::vector<u8color>(scene.img_width));

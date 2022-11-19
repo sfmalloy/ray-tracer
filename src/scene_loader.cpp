@@ -1,3 +1,8 @@
+#include <fmt/core.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+
 #include "scene_loader.hpp"
 #include "utils.hpp"
 #include "vec3_utils.hpp"
