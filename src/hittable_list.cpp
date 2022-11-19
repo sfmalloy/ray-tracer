@@ -1,12 +1,4 @@
-#include <iostream>
-
-#include <memory>
-#include <vector>
-
-#include "types.hpp"
-#include "ray.hpp"
 #include "hittable_list.hpp"
-#include "hittable.hpp"
 
 hittable_list::hittable_list() { }
 

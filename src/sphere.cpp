@@ -1,10 +1,10 @@
 #include <cmath>
 #include <memory>
+
 #include <glm/vec3.hpp>
 
 #include "sphere.hpp"
 #include "vec3_utils.hpp"
-#include "types.hpp"
 
 sphere::sphere()
 { }

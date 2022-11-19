@@ -1,11 +1,9 @@
-#include <iostream>
-#include <ostream>
 #include <string>
 #include <algorithm>
 #include <cmath>
 
-#include "types.hpp"
 #include "color.hpp"
+#include "types.hpp"
 
 void write_color(std::ostream& out, const color& c, u32 samples) {
     f32 scale = 1.0 / samples;
@@ -36,9 +34,9 @@ std::string color_string(const color& c, u32 samples) {
     f32 g = std::sqrt(scale * c.g);
     f32 b = std::sqrt(scale * c.b);
 
-    cstr  = std::to_string(static_cast<i32>(256 * std::clamp(r, 0.0f, 0.999f))) + ' '
-          + std::to_string(static_cast<i32>(256 * std::clamp(g, 0.0f, 0.999f))) + ' '
-          + std::to_string(static_cast<i32>(256 * std::clamp(b, 0.0f, 0.999f))) + '\n';
+    cstr = std::to_string(static_cast<i32>(256 * std::clamp(r, 0.0f, 0.999f))) + ' '
+         + std::to_string(static_cast<i32>(256 * std::clamp(g, 0.0f, 0.999f))) + ' '
+         + std::to_string(static_cast<i32>(256 * std::clamp(b, 0.0f, 0.999f))) + '\n';
 
     return cstr;
 }

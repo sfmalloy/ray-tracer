@@ -1,7 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <memory>
+
 #include <glm/glm.hpp>
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/node/node.h>
@@ -221,7 +221,6 @@ namespace YAML {
                     focus_distance
                 };
             } else {
-                std::cout << "LOADING DEFAULT SCENE\n";
                 rhs = scene_attributes{
                     .aspect_width = 1, 
                     .aspect_height = 1, 

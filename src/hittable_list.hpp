@@ -5,6 +5,7 @@
 
 #include "types.hpp"
 #include "hittable.hpp"
+#include "ray.hpp"
 
 class hittable_list : public hittable {
 public:

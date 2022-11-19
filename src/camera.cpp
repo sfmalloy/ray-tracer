@@ -1,4 +1,3 @@
-#include <glm/vec3.hpp>
 #include <glm/geometric.hpp>
 
 #include "camera.hpp"

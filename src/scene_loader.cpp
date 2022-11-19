@@ -1,14 +1,11 @@
-#include "scene_loader.hpp"
-#include "hittable_list.hpp"
-#include "triangle.hpp"
-#include "utils.hpp"
-#include "vec3_utils.hpp"
-
+#include <fmt/core.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <memory>
-#include <fmt/core.h>
+
+#include "scene_loader.hpp"
+#include "utils.hpp"
+#include "vec3_utils.hpp"
 
 hittable_list random_scene() {
     hittable_list world;

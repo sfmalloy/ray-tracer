@@ -1,8 +1,8 @@
-#include <glm/vec3.hpp>
 #include <memory>
-#include <fmt/core.h>
 
-#include "glm/geometric.hpp"
+#include <fmt/core.h>
+#include <glm/geometric.hpp>
+
 #include "triangle.hpp"
 #include "types.hpp"
 #include "utils.hpp"

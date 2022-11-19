@@ -1,9 +1,12 @@
-#include "triangle.hpp"
-#include "hittable_list.hpp"
+#pragma once
 
 #include <memory>
 #include <vector>
+
 #include <glm/mat4x4.hpp>
+
+#include "triangle.hpp"
+#include "hittable_list.hpp"
 
 // not necessarily a proper mesh class but it'll do for now since this isn't realtime
 class mesh : public hittable {
