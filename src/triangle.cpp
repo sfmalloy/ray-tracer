@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 #include <glm/geometric.hpp>
 
+#include "aabb.hpp"
 #include "triangle.hpp"
 #include "types.hpp"
 #include "utils.hpp"
@@ -45,4 +46,20 @@ bool triangle::same_side(const glm::vec3& p1, const glm::vec3& p2, const glm::ve
     auto pcross = glm::cross(b - a, p1 - a);
     auto ref = glm::cross(b - a, p2 - a);
     return glm::dot(pcross, ref) >= 0;
+}
+
+bool triangle::bounding_box(f32 t0, f32 t1, aabb& output_box) const {
+    glm::vec3 a{
+        min(m_a.x, m_b.x, m_c.x),
+        min(m_a.y, m_b.y, m_c.y),
+        min(m_a.z, m_b.z, m_c.z)
+    };
+    glm::vec3 b{
+        max(m_a.x, m_b.x, m_c.x),
+        max(m_a.x, m_b.x, m_c.x),
+        max(m_a.x, m_b.x, m_c.x)
+    };
+
+    output_box = aabb{a, b};
+    return true;
 }

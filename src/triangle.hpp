@@ -12,6 +12,7 @@ public:
     triangle();
     triangle(const point3& a, const point3& b, const point3& c, std::shared_ptr<material> mat);
     bool hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const override;
+    bool bounding_box(f32 t0, f32 t1, aabb& output_box) const override;
 
 private:
     bool same_side(const glm::vec3& p, const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) const;

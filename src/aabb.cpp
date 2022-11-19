@@ -1,7 +1,6 @@
-#include "aabb.hpp"
-#include "ray.hpp"
-#include "types.hpp"
 #include <cmath>
+
+#include "aabb.hpp"
 
 aabb::aabb()
   : m_min{}
@@ -21,7 +20,7 @@ point3 aabb::max() const {
     return m_max;
 }
 
-inline bool aabb::hit(const ray &r, f32 t_min, f32 t_max) const {
+bool aabb::hit(const ray &r, f32 t_min, f32 t_max) const {
     for (u32 i = 0; i < 3; ++i) {
         f32 inverse_dir = 1.0f / r.direction()[i];
         f32 t0 = (m_min[i] - r.origin()[i]) * inverse_dir;
@@ -38,4 +37,20 @@ inline bool aabb::hit(const ray &r, f32 t_min, f32 t_max) const {
             return false;
     }
     return true;
+}
+
+aabb surrounding_box(const aabb& b0, const aabb& b1) {
+    point3 a{
+        std::fmin(b0.min().x, b1.min().x),
+        std::fmin(b0.min().y, b1.min().y),
+        std::fmin(b0.min().z, b1.min().z)
+    };
+
+    point3 b{
+        std::fmax(b0.max().x, b1.max().x),
+        std::fmax(b0.max().y, b1.max().y),
+        std::fmax(b0.max().z, b1.max().z)
+    };
+
+    return aabb{a, b};
 }

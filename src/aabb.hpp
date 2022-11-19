@@ -2,6 +2,7 @@
 
 #include "ray.hpp"
 #include "types.hpp"
+#include <cmath>
 
 class aabb {
 public:
@@ -11,8 +12,10 @@ public:
     point3 min() const;
     point3 max() const;
 
-    inline bool hit(const ray& r, f32 t_min, f32 t_max) const;
+    bool hit(const ray& r, f32 t_min, f32 t_max) const;
 private:
     point3 m_min;
     point3 m_max;
 };
+
+aabb surrounding_box(const aabb& b0, const aabb& b1);

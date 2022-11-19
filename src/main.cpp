@@ -17,6 +17,7 @@
 #include "scene_attributes.hpp"
 #include "timer.hpp"
 #include "types.hpp"
+#include "utils.hpp"
 #include "yaml-cpp/node/parse.h"
 #include "scene_loader.hpp"
 
@@ -30,6 +31,7 @@ void signal_handler(i32 signal) {
 
 int main(int argc, char** argv) {
     std::signal(SIGINT, signal_handler);
+    std::srand(std::time(0));
 
     cxxopts::Options opts{"RayTracer", "Simple RayTracing engine based on \"Ray Tracing in One Weekend\""};
     opts.add_options()

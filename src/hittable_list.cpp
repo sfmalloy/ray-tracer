@@ -1,4 +1,5 @@
 #include "hittable_list.hpp"
+#include "aabb.hpp"
 
 hittable_list::hittable_list() { }
 
@@ -28,4 +29,21 @@ bool hittable_list::hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) con
     }
 
     return has_hit;
+}
+
+bool hittable_list::bounding_box(f32 t0, f32 t1, aabb& output_box) const {
+    if (m_objects.empty())
+        return false;
+    
+    aabb temp_box;
+    bool first = true;
+
+    for (const auto& obj : m_objects) {
+        if (!obj->bounding_box(t0, t1, temp_box))
+            return false;
+        output_box = first ? temp_box : surrounding_box(output_box, temp_box);
+        first = false;
+    }
+
+    return true;
 }

@@ -14,8 +14,8 @@ scene:
       color: [ 220, 30, 20 ]
 settings:
   aspect_ratio: [ 1, 1 ]
-  image_width: 200
-  samples: 10
+  image_width: 500
+  samples: 100
   depth: 50
   lookfrom: [ -8.0, 7.0, 20.0 ]
   lookat: [ 0.0, 2.0, 0.0 ]

@@ -19,6 +19,10 @@ inline f32 randf32() {
     return std::rand() / (static_cast<f32>(RAND_MAX) + 1.0f);
 }
 
+inline i32 randi32(i32 min, i32 max) {
+    return min + std::rand() % ((max - min) + 1);
+}
+
 inline f32 randf32(f32 min, f32 max) {
     return min + (max - min) * randf32();
 }

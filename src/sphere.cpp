@@ -46,7 +46,7 @@ bool sphere::hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const {
 }
 
 bool sphere::bounding_box(f32 t0, f32 t1, aabb& output_box) const {
-    auto rvec = glm::vec3{m_radius, m_radius, m_radius};
+    glm::vec3 rvec{m_radius, m_radius, m_radius};
     output_box = aabb{
         m_center - rvec,
         m_center + rvec

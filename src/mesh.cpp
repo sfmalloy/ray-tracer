@@ -1,4 +1,7 @@
 #include "mesh.hpp"
+#include "bvh.hpp"
+#include "utils.hpp"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -41,8 +44,14 @@ mesh::mesh(const std::string& filename, std::shared_ptr<material> mat, const glm
 
         fmt::print("Loaded {} triangles\n", mesh->mNumFaces);
     }
+
+    m_bvh = std::make_shared<bvh_node>(m_faces, 0, 1);
 }
 
 bool mesh::hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const {
-    return m_faces.hit(r, t_min, t_max, rec);
+    return m_bvh->hit(r, t_min, t_max, rec);
+}
+
+bool mesh::bounding_box(f32 t0, f32 t1, aabb& output_box) const {    
+    return m_bvh->bounding_box(t0, t1, output_box);
 }
