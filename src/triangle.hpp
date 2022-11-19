@@ -11,7 +11,6 @@ class triangle : public hittable {
 public:
     triangle();
     triangle(const point3& a, const point3& b, const point3& c, std::shared_ptr<material> mat);
-    triangle(const point3& a, const point3& b, const point3& c, const glm::vec3& normal, std::shared_ptr<material> mat);
     bool hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const override;
 
 private:
