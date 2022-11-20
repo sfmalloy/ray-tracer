@@ -64,5 +64,5 @@ bvh_node::bvh_node(const std::vector<std::shared_ptr<hittable>>& src_objects,
         fmt::print("No bounding box in bvh_node ctor\n");
     }
 
-    m_box =surrounding_box(box_left, box_right);
+    m_box = surrounding_box(box_left, box_right);
 }
