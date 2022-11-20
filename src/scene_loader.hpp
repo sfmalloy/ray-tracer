@@ -73,6 +73,9 @@ namespace YAML {
             } else if (type == "dielectric") {
                 rhs = std::make_shared<dielectric>(node["index"].as<f32>());
                 return true;
+            } else if (type == "diffuse_light") {
+                rhs = std::make_shared<diffuse_light>(node["color"].as<color>() / 256.0f);
+                return true;
             }
             return false;
         }
@@ -110,12 +113,14 @@ namespace YAML {
                 rhs = std::make_shared<mesh>(
                     node["file"].as<std::string>(),
                     node["material"].as<std::shared_ptr<material>>(),
-                    node["offset"].as<glm::vec3>()
+                    node["offset"].as<glm::vec3>(),
+                    node["scale"].IsDefined() ? node["scale"].as<f32>() : 1.0f
                 );
             } else {
                 rhs = std::make_shared<mesh>(
                     node["file"].as<std::string>(),
-                    node["material"].as<std::shared_ptr<material>>()
+                    node["material"].as<std::shared_ptr<material>>(),
+                    node["scale"].IsDefined() ? node["scale"].as<f32>() : 1.0f
                 );
             }
             return true;
@@ -135,6 +140,13 @@ namespace YAML {
                 if (!node["settings"].IsMap())
                     return false;
                 auto settings = node["settings"];
+
+                if (settings["background"].IsDefined()) {
+                    rhs.background = settings["background"].as<color>() / 256.0f;
+                } else {
+                    rhs.background = color{};
+                }
+
                 if (settings["aspect_ratio"].IsDefined()) {
                     if (!settings["aspect_ratio"].IsSequence())
                         return false;

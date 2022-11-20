@@ -9,11 +9,11 @@
 mesh::mesh()
 { }
 
-mesh::mesh(const std::string& filename, std::shared_ptr<material> mat)
-  : mesh(filename, mat, glm::vec3{0,0,0})
+mesh::mesh(const std::string& filename, std::shared_ptr<material> mat, f32 scale)
+  : mesh(filename, mat, glm::vec3{0.0f,0.0f,0.0f}, scale)
 { }
 
-mesh::mesh(const std::string& filename, std::shared_ptr<material> mat, const glm::vec3& offset) {
+mesh::mesh(const std::string& filename, std::shared_ptr<material> mat, const glm::vec3& offset, f32 scale) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
         aiProcess_JoinIdenticalVertices | aiProcess_Triangulate);
@@ -28,9 +28,9 @@ mesh::mesh(const std::string& filename, std::shared_ptr<material> mat, const glm
         vertices.reserve(mesh->mNumVertices * 3);
         std::vector<glm::vec3> normals;
         for (u32 i = 0; i < mesh->mNumVertices; ++i) {
-            vertices.emplace_back(mesh->mVertices[i].x + offset.x,
-                                  mesh->mVertices[i].y + offset.y,
-                                  mesh->mVertices[i].z + offset.z);
+            vertices.emplace_back(scale * (mesh->mVertices[i].x + offset.x),
+                                  scale * (mesh->mVertices[i].y + offset.y),
+                                  scale * (mesh->mVertices[i].z + offset.z));
         }
 
         for (u32 i = 0; i < mesh->mNumFaces; ++i) {

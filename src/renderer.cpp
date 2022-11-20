@@ -9,23 +9,22 @@
 #include "renderer.hpp"
 #include "utils.hpp"
 
-color renderer::ray_color(const ray& r, const hittable& world, u32 depth) {
+color renderer::ray_color(const ray& r, const color& background, const hittable& world, u32 depth) {
     if (depth <= 0)
         return color{};
     
     hit_record rec;
-    if (world.hit(r, 0.001f, INF, rec)) {
-        ray scattered;
-        color attenuation;
-        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
-            return attenuation * ray_color(scattered, world, depth - 1);
-        return color{};
+    if (!world.hit(r, 0.001f, INF, rec)) {
+        return background;
     }
 
-    // background/sky
-    glm::vec3 dir = glm::normalize(r.direction());
-    f32 t = 0.5f * (dir.y + 1.0f);
-    return (1.0f - t) * color{1.0f, 1.0f, 1.0f} + t * color{0.7f, 0.7f, 0.7f};
+    ray scattered;
+    color attenuation;
+    color emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
+    if (!rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+        return emitted;
+
+    return emitted + attenuation * ray_color(scattered, background, world, depth - 1);
 }
 
 row_renderer::row_renderer(u32 num_threads)
@@ -69,7 +68,7 @@ std::vector<u8color> row_renderer::render_thread(u32 tid, i32 start, i32 end, co
                 f32 u = (col + randf32()) / (scene.img_width - 1);
                 f32 v = (row + randf32()) / (scene.img_height - 1);
                 ray r = scene.cam.get_ray(u, v);
-                pixel += ray_color(r, scene.world, scene.max_depth);
+                pixel += ray_color(r, scene.background, scene.world, scene.max_depth);
             }
             pixels.push_back(to_u8color(pixel, scene.samples));
         }
@@ -147,7 +146,7 @@ void tile_renderer::render_thread(u32 tid, const scene_attributes& scene) {
                     f32 u = (col + randf32()) / (scene.img_width - 1);
                     f32 v = (row + randf32()) / (scene.img_height - 1);
                     ray r = scene.cam.get_ray(u, v);
-                    pixel += ray_color(r, scene.world, scene.max_depth);
+                    pixel += ray_color(r, scene.background, scene.world, scene.max_depth);
                 }
                 m_grid[row][col] = to_u8color(pixel, scene.samples);
             }

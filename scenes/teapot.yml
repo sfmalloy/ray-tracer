@@ -2,24 +2,32 @@ scene:
   - 
     type: model
     file: ../obj/scene.gltf
+    scale: 0.1
     material:
       type: lambertian
       color: [ 80, 80, 80 ]
+  -
+    type: sphere
+    center: [2.0, 1.0, 0.0]
+    radius: 1
+    material:
+      type: diffuse_light
+      color: [255, 255, 255]
   - 
     type: sphere
-    center: [ 0.0, -1000, 0.0 ]
-    radius: 1000
+    center: [ 0.0, -100, 0.0 ]
+    radius: 100
     material:
       type: lambertian
       color: [ 220, 30, 20 ]
 settings:
   aspect_ratio: [ 1, 1 ]
-  image_width: 200
-  samples: 10
+  image_width: 500
+  samples: 100
   depth: 50
-  lookfrom: [ -8.0, 7.0, 20.0 ]
-  lookat: [ 0.0, 2.0, 0.0 ]
+  lookfrom: [ -1.0, 1.0, 5.0 ]
+  lookat: [ 0.0, 0.2, 0.0 ]
   up: [ 0.0, 1.0, 0.0 ]
   fov: 45.0
-  focus_distance: 5.0
+  focus_distance: 2.0
   aperture: 0.01

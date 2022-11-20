@@ -12,8 +12,8 @@
 class mesh : public hittable {
 public:
     mesh();
-    mesh(const std::string& filename, std::shared_ptr<material> mat);
-    mesh(const std::string& filename, std::shared_ptr<material> mat, const glm::vec3& offset);
+    mesh(const std::string& filename, std::shared_ptr<material> mat, f32 scale);
+    mesh(const std::string& filename, std::shared_ptr<material> mat, const glm::vec3& offset, f32 scale);
     bool hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const override;
 private:
     hittable_list m_faces;
