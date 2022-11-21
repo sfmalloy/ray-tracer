@@ -26,7 +26,6 @@ bool triangle::hit(const ray& r, f32 t_min, f32 t_max, hit_record& rec) const {
     if (t < t_min || t > t_max)
         return false;
 
-
     auto p = r.at(t);
     if (!same_side(p, m_a, m_b, m_c) || !same_side(p, m_b, m_a, m_c) || !same_side(p, m_c, m_a, m_b)) {
         return false;
