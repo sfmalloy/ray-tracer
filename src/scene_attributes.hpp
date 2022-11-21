@@ -13,4 +13,5 @@ struct scene_attributes {
     i32 max_depth;
     camera cam;
     hittable_list world;
+    color background;
 };

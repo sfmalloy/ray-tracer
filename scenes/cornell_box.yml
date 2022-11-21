@@ -1,0 +1,61 @@
+scene:
+  - # red left rectangle
+    type: rectangle
+    a: [0, 0, 0]
+    b: [0, 555, 555]
+    normal: [1, 0, 0]
+    material:
+      type: lambertian
+      color: [165, 12, 12]
+  - # green right rectangle
+    type: rectangle
+    a: [555, 0, 0]
+    b: [555, 555, 555]
+    normal: [1, 0, 0]
+    material:
+      type: lambertian
+      color: [32, 122, 35]
+  - # white bottom rectangle
+    type: rectangle
+    a: [0, 0, 0]
+    b: [555, 0, 555]
+    normal: [0, 1, 0]
+    material:
+      type: lambertian
+      color: [187, 187, 187]
+  - # white top rectangle
+    type: rectangle
+    a: [0, 555, 0]
+    b: [555, 555, 555]
+    normal: [0, 1, 0]
+    material:
+      type: lambertian
+      color: [187, 187, 187]
+  - # white back rectangle
+    type: rectangle
+    a: [0, 0, 555]
+    b: [555, 555, 555]
+    normal: [0, 0, 1]
+    material:
+      type: lambertian
+      color: [187, 187, 187]
+  - # light
+    type: rectangle
+    a: [113, 554, 127]
+    b: [443, 554, 432]
+    normal: [0, -1, 0]
+    material:
+      type: diffuse_light
+      color: [7, 7, 7]
+settings:
+  aspect_ratio: [ 1, 1 ]
+  image_width: 500
+  samples: 10
+  depth: 50
+  lookfrom: [ 278, 278, -700 ]
+  lookat: [ 278, 278, 0 ]
+  up: [ 0.0, 1.0, 0.0 ]
+  fov: 40.0
+  focus_distance: 5.0
+  aperture: 0.01
+  background: [0,0,0]

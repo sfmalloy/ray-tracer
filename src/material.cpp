@@ -2,8 +2,14 @@
 #include "vec3_utils.hpp"
 #include "utils.hpp"
 
+color material::emitted(f32 u, f32 v, const point3& p) const {
+    return color{0.0f, 0.0f, 0.0f};
+}
+
+/*****************************************************************************/
+
 lambertian::lambertian(const color& albedo)
-  : m_albedo{albedo}
+  : m_albedo{std::make_shared<solid_color>(albedo)}
 { }
 
 bool lambertian::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
@@ -13,9 +19,11 @@ bool lambertian::scatter(const ray& r_in, const hit_record& rec, color& attenuat
         dir = rec.normal;
 
     scattered = ray{rec.p, dir - rec.p};
-    attenuation = m_albedo;
+    attenuation = m_albedo->value(rec.u, rec.v, rec.p);
     return true;
 }
+
+/*****************************************************************************/
 
 metal::metal(const color& albedo, f32 fuzz)
   : m_albedo{albedo},
@@ -27,8 +35,10 @@ bool metal::scatter(const ray& r_in, const hit_record& rec, color& attenuation, 
     scattered = ray{rec.p, reflected + m_fuzz * randvec_unit_sphere()};
     attenuation = m_albedo;
 
-    return dot(scattered.direction(), rec.normal) > 0;
+    return glm::dot(scattered.direction(), rec.normal) > 0;
 }
+
+/*****************************************************************************/
 
 dielectric::dielectric(f32 index_of_refraction)
   : m_ir{index_of_refraction}
@@ -47,8 +57,26 @@ bool dielectric::scatter(const ray& r_in, const hit_record& rec, color& attenuat
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > randf32())
         dir = glm::reflect(unit_dir, rec.normal);
     else
-        dir = refract(unit_dir, rec.normal, refraction_ratio);
+        dir = glm::refract(unit_dir, rec.normal, refraction_ratio);
 
     scattered = ray{rec.p, dir};
     return true;
+}
+
+/*****************************************************************************/
+
+diffuse_light::diffuse_light(std::shared_ptr<texture> a)
+  : m_emit{a}
+{ }
+
+diffuse_light::diffuse_light(const color& c)
+  : m_emit{std::make_shared<solid_color>(c)}
+{ }
+
+bool diffuse_light::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
+    return false;
+}
+
+color diffuse_light::emitted(f32 u, f32 v, const point3& p) const {
+    return m_emit->value(u, v, p);
 }

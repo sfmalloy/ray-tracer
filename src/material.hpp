@@ -5,6 +5,7 @@
 #include "ray.hpp"
 #include "color.hpp"
 #include "hittable.hpp"
+#include "texture.hpp"
 
 struct hit_record;
 
@@ -12,6 +13,9 @@ class material {
 public:
     virtual bool 
     scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const = 0;
+
+    virtual color
+    emitted(f32 u, f32 v, const point3& p) const;
 };
 
 class lambertian : public material {
@@ -21,7 +25,8 @@ public:
     virtual bool 
     scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override;
 private:
-    color m_albedo;
+    // color m_albedo;
+    std::shared_ptr<solid_color> m_albedo;
 };
 
 class metal : public material {
@@ -49,4 +54,18 @@ private:
         r *= r;
         return r + (1 - r) * std::pow(1 - cosine, 5);
     }
+};
+
+class diffuse_light : public material {
+public:
+    diffuse_light(std::shared_ptr<texture> a);
+    diffuse_light(const color& c);
+
+    virtual bool 
+    scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override;
+
+    virtual color
+    emitted(f32 u, f32 v, const point3& p) const override;
+private:
+    std::shared_ptr<texture> m_emit;
 };
